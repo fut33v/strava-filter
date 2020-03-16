@@ -1,0 +1,13 @@
+{
+    "manifest_version": 2,
+    "name": "Strava Filter",
+    "version": "0.1",
+    "content_scripts": [
+        {
+            "matches":[
+                "https://www.strava.com/dashboard", 
+                "https://www.strava.com/dashboard/following/*"],
+            "js":["content.js"]
+        }
+    ]
+}
