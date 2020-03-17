@@ -1,13 +1,22 @@
 {
     "manifest_version": 2,
     "name": "Strava Filter",
-    "version": "0.1",
+    "permissions":[
+        "storage" 
+    ],
+    "version": "0.228",
     "content_scripts": [
         {
-            "matches":[
-                "https://www.strava.com/dashboard", 
-                "https://www.strava.com/dashboard/following/*"],
-            "js":["content.js"]
+            "matches": [
+                "https://www.strava.com/dashboard",
+                "https://www.strava.com/dashboard/following/*"
+            ],
+            "js": [
+                "content.js"
+            ]
         }
-    ]
+    ],
+    "browser_action": {
+        "default_popup": "popup.html"
+    }
 }

@@ -1,20 +1,57 @@
 //alert("Hello from your Chrome extension!")
 
-var FILTER_LESS_THAN_KM = 30;
-var FILTER_VIRTUAL_RIDES = true;
-var FILTER_COMMUTE_RIDES = true;
-var FILTER_RACE_RIDES = true;
-var FILTER_CLUB_CARDS = true;
-var FILTER_CHALLENGES_CARDS = true;
-
+var FILTER_LESS_THAN_KM = undefined;
+var FILTER_VIRTUAL_RIDES = false;
+var FILTER_COMMUTE_RIDES = false;
+var FILTER_RACE_RIDES = false;
+var FILTER_CLUB_CARDS = false;
+var FILTER_CHALLENGES_CARDS = false;
 
 
 var RACE_STR = "Race";
 var VIRTUAL_STR = "Virtual";
 var COMMUTE_STR = "Commute";
 
+var HIDDEN_ELEMENTS_SET = new Set();
+
+
+chrome.storage.sync.get(['filterKm'], function (result) {
+    var filterKm = result.filterKm;
+    var filterKmValue = 30;
+    if (filterKm != undefined) {
+        filterKmValue = filterKm;
+    }
+    FILTER_LESS_THAN_KM = filterKmValue;
+});
+chrome.storage.sync.get(['filterClub'], function (result) {
+    FILTER_CLUB_CARDS = result.filterClub;
+});
+chrome.storage.sync.get(['filterChallenges'], function (result) {
+    FILTER_CHALLENGES_CARDS = result.filterChallenges;
+});
+chrome.storage.sync.get(['filterCommute'], function (result) {
+    FILTER_COMMUTE_RIDES = result.filterCommute;
+});
+chrome.storage.sync.get(['filterVirtual'], function (result) {
+    FILTER_VIRTUAL_RIDES = result.filterVirtual;
+});
+chrome.storage.sync.get(['filterRace'], function (result) {
+    FILTER_RACE_RIDES = result.filterRace;
+});
+
+
+
+
 function hideElement(someElement) {
+    var prevDisplay = someElement.style.display;
+    HIDDEN_ELEMENTS_SET.add([someElement, prevDisplay]);
     someElement.style.display = "none";
+}
+
+function showAllElements() {
+    for (let e of HIDDEN_ELEMENTS_SET) {
+        e[0].style.display = e[1];
+    }
 }
 
 function filterChallenges() {
@@ -55,21 +92,21 @@ function filterActivities() {
         }
 
         var activityMapTags = a.getElementsByClassName("activity-map-tag");
-        if (activityMapTags && activityMapTags.length !=0){
+        if (activityMapTags && activityMapTags.length != 0) {
             var activityTag = activityMapTags[0].innerText;
-            activityTag = activityTag.replace(/(\r\n|\n|\r)/gm,"");
+            activityTag = activityTag.replace(/(\r\n|\n|\r)/gm, "");
 
-            if (activityTag == VIRTUAL_STR && FILTER_VIRTUAL_RIDES){
-                hideElement(a);
-            } 
-            else 
-            if (activityTag == COMMUTE_STR && FILTER_COMMUTE_RIDES) {
+            if (activityTag == VIRTUAL_STR && FILTER_VIRTUAL_RIDES) {
                 hideElement(a);
             }
-            else 
-            if (activityTag == RACE_STR && FILTER_RACE_RIDES) {
-                hideElement(a);
-            }
+            else
+                if (activityTag == COMMUTE_STR && FILTER_COMMUTE_RIDES) {
+                    hideElement(a);
+                }
+                else
+                    if (activityTag == RACE_STR && FILTER_RACE_RIDES) {
+                        hideElement(a);
+                    }
         }
 
         var distanceDiv = stat[0];
@@ -98,23 +135,24 @@ function filterActivities() {
             //console.log("need to filter", distance, unitStr, a);
             hideElement(a);
         }
-
-        // console.log(typeof distancePlusUnit);
-        // console.log(distancePlusUnit);
-        // console.log(distanceUnitArray);
-
     }
 }
 
 function doFilter() {
+
+
+
+
     if (FILTER_CLUB_CARDS) {
         filterClubCards();
     }
-    if (FILTER_CHALLENGES_CARDS){
+    if (FILTER_CHALLENGES_CARDS) {
         filterChallenges();
     }
 
-    filterActivities();
+    if (FILTER_LESS_THAN_KM != undefined) {
+        filterActivities();
+    }
 }
 
 window.onscroll = function () {
@@ -122,3 +160,4 @@ window.onscroll = function () {
     // filterActivities();
     // filterChallenges();
 };
+
