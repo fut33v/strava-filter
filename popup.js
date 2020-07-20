@@ -5,7 +5,8 @@ function applyButtonHandler() {
     var filterClub = document.getElementById("filter-club").checked;
     var filterChallenges = document.getElementById("filter-challenges").checked;
 
-    var filterKm = document.getElementById("filter-km").value;
+    var filterKmBicycle = document.getElementById("bicycle-filter-km").value;
+    var filterKmRun = document.getElementById("run-filter-km").value;
 
     chrome.storage.sync.set({ "filterCommute": filterCommute }, function () {
         console.log('filterCommute is set to ' + filterCommute);
@@ -22,8 +23,11 @@ function applyButtonHandler() {
     chrome.storage.sync.set({ "filterChallenges": filterChallenges }, function () {
         console.log('filterChallenges is set to ' + filterChallenges);
     });
-    chrome.storage.sync.set({ "filterKm": filterKm }, function () {
-        console.log('filterKm is set to ' + filterKm);
+    chrome.storage.sync.set({ "filterKmBicycle": filterKmBicycle }, function () {
+        console.log('filterKmBicycle is set to ' + filterKmBicycle);
+    });
+    chrome.storage.sync.set({ "filterKmRun": filterKmRun }, function () {
+        console.log('filterKmRun is set to ' + filterKmRun);
     });
 }
 
@@ -38,11 +42,24 @@ document.addEventListener('DOMContentLoaded', function () {
     var filterClub = document.getElementById("filter-club");
     var filterChallenges = document.getElementById("filter-challenges");
 
-    var filterKillometersSlider = document.getElementById("filter-km");
-    var filterKillometersLabel = document.getElementById("filter-km-label");
+    var filterKmSliderBicycle = document.getElementById("bicycle-filter-km");
+    var filterKmInputBicycle = document.getElementById("bicycle-filter-km-label");
 
-    filterKillometersSlider.oninput = function(){
-        filterKillometersLabel.innerHTML = this.value;
+    var filterKmSliderRun = document.getElementById("run-filter-km");
+    var filterKmInputRun = document.getElementById("run-filter-km-label");
+
+    filterKmSliderBicycle.oninput = function(){
+        filterKmInputBicycle.value = this.value;
+    };
+    filterKmInputBicycle.oninput = function(){
+        filterKmSliderBicycle.value = filterKmInputBicycle.value;
+    };
+
+    filterKmSliderRun.oninput = function(){
+        filterKmInputRun.value = this.value;
+    };
+    filterKmInputRun.oninput = function(){
+        filterKmSliderRun.value = filterKmInputRun.value;
     };
 
     chrome.storage.sync.get(['filterCommute'], function (result) {
@@ -60,38 +77,37 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.sync.get(['filterChallenges'], function (result) {
         filterChallenges.checked = result.filterChallenges;
     });
-    chrome.storage.sync.get(['filterKm'], function (result) {
+    
+    // TODO: carrying or bind ? these two invokes
+    chrome.storage.sync.get(['filterKmBicycle'], function(result) {
         console.log(result);
-        var filterKm = result.filterKm;
+        var filterKm = result.filterKmBicycle;
         var filterKmValue = 30;
         if (filterKm != undefined) {
             filterKmValue = filterKm;
         }
-        filterKillometersSlider.value = filterKmValue;
-        filterKillometersLabel.innerHTML = filterKmValue;
+        filterKmSliderBicycle.value = filterKmValue;
+        filterKmInputBicycle.value = filterKmValue;
+
     });
+    chrome.storage.sync.get(['filterKmRun'], function(result) {
+        console.log(result);
+        var filterKm = result.filterKmRun;
+        var filterKmValue = 30;
+        if (filterKm != undefined) {
+            filterKmValue = filterKm;
+        }
+        filterKmSliderRun.value = filterKmValue;
+        filterKmInputRun.value = filterKmValue;
 
-
-
-
+    });
 });
 
 
 var applyButton = document.getElementById("apply");
 
 function applyButtonClick() {
-
     var filterClub = document.getElementById("filter-club").checked;
     var filterChallenges = document.getElementById("filter-challenges").checked;
-
     console.log(filterClub, filterChallenges);
-
-    alert("xyu");
 }
-
-
-
-//   chrome.storage.sync.get(['key'], function(result) {
-//     console.log('Value currently is ' + result.key);
-//   });
-

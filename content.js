@@ -1,6 +1,7 @@
 //alert("Hello from your Chrome extension!")
 
-var FILTER_LESS_THAN_KM = undefined;
+var FILTER_LESS_THAN_KM_BICYCLE = undefined;
+var FILTER_LESS_THAN_KM_RUN = undefined;
 var FILTER_VIRTUAL_RIDES = false;
 var FILTER_COMMUTE_RIDES = false;
 var FILTER_RACE_RIDES = false;
@@ -15,14 +16,24 @@ var COMMUTE_STR = "Commute";
 var HIDDEN_ELEMENTS_SET = new Set();
 
 
-chrome.storage.sync.get(['filterKm'], function (result) {
-    var filterKm = result.filterKm;
+chrome.storage.sync.get(['filterKmBicycle'], function (result) {
+    var filterKm = result.filterKmBicycle;
     var filterKmValue = 30;
     if (filterKm != undefined) {
         filterKmValue = filterKm;
     }
-    FILTER_LESS_THAN_KM = filterKmValue;
+    FILTER_LESS_THAN_KM_BICYCLE = filterKmValue;
 });
+chrome.storage.sync.get(['filterKmRun'], function (result) {
+    var filterKm = result.filterKmRun;
+    var filterKmValue = 30;
+    if (filterKm != undefined) {
+        filterKmValue = filterKm;
+    }
+    FILTER_LESS_THAN_KM_RUN = filterKmValue;
+});
+
+
 chrome.storage.sync.get(['filterClub'], function (result) {
     FILTER_CLUB_CARDS = result.filterClub;
 });
@@ -121,7 +132,6 @@ function filterActivities() {
 
         var distanceUnitArray = distancePlusUnit.split(" ");
         if (distanceUnitArray.length != 2) {
-            //console.log("'distanceUnitArray' array length != 2", distanceUnitArray, distancePlusUnit, distanceDiv, a);
             continue;
         }
 
@@ -130,19 +140,22 @@ function filterActivities() {
 
         var distance = parseFloat(distanceStr);
 
+        var run = a.getElementsByClassName("icon-run").length != 0;
+        var bicycle = a.getElementsByClassName("icon-ride").length != 0;
 
-        if (unitStr == "m" || distance < FILTER_LESS_THAN_KM) {
-            //console.log("need to filter", distance, unitStr, a);
+        if (unitStr == "m") {
+            hideElement(a);
+        }
+        if (run && distance < FILTER_LESS_THAN_KM_RUN) {
+            hideElement(a);
+        }
+        if (bicycle && distance < FILTER_LESS_THAN_KM_BICYCLE) {
             hideElement(a);
         }
     }
 }
 
 function doFilter() {
-
-
-
-
     if (FILTER_CLUB_CARDS) {
         filterClubCards();
     }
@@ -150,14 +163,19 @@ function doFilter() {
         filterChallenges();
     }
 
-    if (FILTER_LESS_THAN_KM != undefined) {
+    if (FILTER_LESS_THAN_KM_BICYCLE != undefined && FILTER_LESS_THAN_KM_RUN != undefined) {
         filterActivities();
     }
 }
 
+
+window.onload = function() {
+    setTimeout(function() {
+        doFilter();
+    }, 100);
+};
+
 window.onscroll = function () {
     doFilter();
-    // filterActivities();
-    // filterChallenges();
 };
 

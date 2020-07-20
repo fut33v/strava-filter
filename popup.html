@@ -8,6 +8,7 @@ body {
   /* position: relative;
   vertical-align:middle; */
     background: #fc5200;
+    color: white;
 }
 
 .control{
@@ -20,16 +21,14 @@ body {
 .control-child {
     display: table-cell;
 }
-
 .control-child-inner {
     margin-left: 25px;
     font-size: large;
+    width: 50px;
 }
-
 .control-child:first-child .control-child-inner {
     margin-left: 0;
 }
-
 .slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
@@ -41,7 +40,6 @@ body {
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
-
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -51,7 +49,6 @@ body {
   background: black;
   cursor: pointer;
 }
-
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
@@ -86,13 +83,25 @@ body {
             <input type="checkbox" id="filter-challenges" checked>Filter challenges cards</input>
         </div>
 
+        <h4>bicycle</h4>
         <div class="control">
             <div class="control-child">
-                <input type="range" min="5" max="100" value="30" class="slider control-child-inner" id="filter-km">
+                <input type="range" min="5" max="100" value="30" class="slider control-child-inner" id="bicycle-filter-km">
             </div>
             <div class="control-child">
-                <span class="control-child-inner" id=filter-km-label> </span>
-                <span >km</span>
+                <input class="control-child-inner" id="bicycle-filter-km-label"></input>
+                <span>km</span>
+            </div>
+        </div>
+        
+        <h4>run</h4>
+        <div class="control">
+            <div class="control-child">
+                <input type="range" min="5" max="100" value="30" class="slider control-child-inner" id="run-filter-km">
+            </div>
+            <div class="control-child">
+                <input class="control-child-inner" id="run-filter-km-label"></input>
+                <span>km</span>
             </div>
         </div>
 
